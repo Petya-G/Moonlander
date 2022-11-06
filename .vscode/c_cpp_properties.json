@@ -3,7 +3,11 @@
         {
             "name": "linux-gcc-x64",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/opt/vcpkg/installed/x64-linux/include/SDL2",
+                "/opt/vcpkg/packages/vcpkg-cmake_x64-linux/",
+                "/usr/include/SDL2/",
+                "/usr/share/fonts/TTF/"
             ],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "${default}",
