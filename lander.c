@@ -1,4 +1,6 @@
 #include "lander.h"
+#include "geometry.h"
+#include <SDL2/SDL2_gfxPrimitives.h>
 
 const float g = 0.0116;
 
@@ -8,7 +10,7 @@ Lander lander = {640 / 2.0, 480 / 2.0, 0, STARTVEL, STARTVEL};
 void renderLander(void) {
   float x = lander.x;
   float y = lander.y;
-  int n = 6;
+  int n = 8;
   Point o = {lander.x, lander.y - 14};
 
   Line l[] = {
@@ -18,9 +20,11 @@ void renderLander(void) {
       {{x - 14, y - 1}, {x - 9, y - 10}},
       {{x - 10, y - 10}, {x + 12, y - 10}},
       {{x - 10, y - 14}, {x + 12, y - 14}},
+      {{x - 10, y - 14}, {x - 10, y - 10}},
+      {{x + 12, y - 14}, {x + 12, y - 10}},
   };
-
   Line rls[n];
+
   for (int i = 0; i < n; ++i) {
     Line rl = rotateLine(l[i], o, lander.angle);
     rls[i] = rl;
@@ -29,13 +33,27 @@ void renderLander(void) {
   for (int i = 0; i < n; ++i)
     renderLine(rls[i]);
 
-  // rectangleRGBA(renderer, x - 10, y - 10, x + 12, y - 14, 255, 255, 255,
-  // 255);
+  n = 8;
+  Point polyPoints[] = {{x - 3, y - 14}, {x + 4, y - 14}, {x + 9, y - 19},
+                        {x + 9, y - 26}, {x + 4, y - 31}, {x - 3, y - 31},
+                        {x - 8, y - 26}, {x - 8, y - 19}};
+  Point rpolyPoints[n];
 
-  // Sint16 vx[8] = {x - 3, x + 4, x + 9, x + 9, x + 4, x - 3, x - 8, x - 8};
-  // Sint16 vy[8] = {y - 14, y - 14, y - 19, y - 26,
-  //                 y - 31, y - 31, y - 26, y - 19};
-  // aapolygonRGBA(renderer, vx, vy, 8, 255, 255, 255, 255);
+
+  for(int i =0; i  < n; ++i){
+    Point rp = rotatePoint(polyPoints[i], o, lander.angle);
+    rpolyPoints[i] = rp;
+  }
+  
+  Sint16 vy[n];
+  Sint16 vx[n];
+
+  for(int i = 0; i < n; ++i){
+    vx[i] = rpolyPoints[i].x;
+    vy[i] = rpolyPoints[i].y;
+  }
+
+  aapolygonRGBA(renderer, vx, vy, n, 255, 255, 255, 255);
 }
 
 void updateLander(void) {
@@ -71,7 +89,7 @@ void landerEvent(SDL_Event event) {
     if (event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d)
       lander.angle += 5;
 
-    if(lander.angle == 360 || lander.angle == -360)
+    if (lander.angle == 360 || lander.angle == -360)
       lander.angle = 0;
   }
 }
