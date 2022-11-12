@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "sdl2_gfxprimitives.h": "c",
+        "sdl_rect.h": "c",
+        "geometry.h": "c",
+        "source_location": "c"
+    }
+}

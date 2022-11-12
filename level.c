@@ -1,13 +1,9 @@
-#include "sdlstuff.h"
 #include "level.h"
+#include "geometry.h"
 
+int n = 1;
+Line l[] = {{{0, 300}, {640, 300}}};
 void renderLevel(void) {
-  // Sint16 vx[8];
-  // int pos = 0;
-  // for (int i = 0; i < 8; ++i) {
-  //   pos += WIDTH / 8;
-  //   vx[i] = pos;
-  // }
-  // Sint16 vy[4] = {50, 100, 300, 155};
-  // bezierRGBA(renderer, vx, vy, 4, 2, 255, 255, 255, 255);
+  for(int i = 0; i < n; ++i)
+    renderLine(l[i]);
 }

@@ -1,5 +1,13 @@
 #include "geometry.h"
 
+bool ccw(Point a, Point b, Point c){
+  return (c.y-a.y)*(b.x-a.x) > (b.y-a.y)*(c.x-a.x);
+}
+
+bool intersect(Line l1, Line l2){
+  return ccw(l1.a,l2.a,l2.b) != ccw(l1.b,l2.a,l2.b) & ccw(l1.a,l1.b,l2.a) != ccw(l1.a,l1.b,l2.b);
+}
+
 Point rotatePoint(Point p, Point o, float angle) {
   float c = cos(TORAD(angle));
   float s = sin(TORAD(angle));

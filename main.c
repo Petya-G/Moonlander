@@ -32,8 +32,6 @@ void update(void) {
   SDL_RenderClear(renderer);
 
   updateLander();
-
-  renderLander();
   renderLevel();
   renderText();
 

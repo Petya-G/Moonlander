@@ -1,8 +1,8 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
+#include "sdlstuff.h"
 #include <math.h>
 #include <stdbool.h>
-#include "sdlstuff.h"
 
 #define TORAD(angle) (M_PI * angle / 180.0)
 
@@ -16,7 +16,11 @@ typedef struct Line {
   Point b;
 } Line;
 
+
+bool ccw(Point a, Point b, Point c);
+bool intersect(Line l1, Line l2);
 Point rotatePoint(Point p, Point o, float angle);
 Line rotateLine(Line l, Point o, float angle);
+bool linesInstersect(Line l1, Line l2);
 void renderLine(Line l);
 #endif
