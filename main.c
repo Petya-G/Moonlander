@@ -1,39 +1,43 @@
 #include "debugmalloc.h"
-#include "sdlstuff.h"
 #include "geometry.h"
 #include "lander.h"
 #include "level.h"
+#include "sdlstuff.h"
 #include "text.h"
-
-void landerEvent(SDL_Event event);
+#include <stdlib.h>
 
 int main(int argc, char *arg[]) {
   if (!init())
     exit(1);
 
-  bool quit = false;
-  SDL_Event event;
+  Uint32 lastTick = SDL_GetTicks();
+  elapsed = SDL_GetTicks();
+  
+  initTerrain(450, 200);
+  generateTerrain();
 
+  SDL_Event event;
+  bool quit = false;
   while (!quit) {
     while (SDL_PollEvent(&event)) {
       if (event.type == SDL_QUIT)
         quit = true;
 
-      landerEvent(event);
+      Uint32 curTick = SDL_GetTicks();
+      double dt = (curTick - lastTick) / 1000.0;
+      landerEvent(event, dt);
     }
-    update();
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
+    landerUpdate();
+    renderTerrain();
+    renderText();
+
+    SDL_RenderPresent(renderer);
   }
-
+  freeTerrain();
   shutdown();
-}
-
-void update(void) {
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-  SDL_RenderClear(renderer);
-
-  updateLander();
-  renderLevel();
-  renderText();
-
-  SDL_RenderPresent(renderer);
+  return 0;
 }

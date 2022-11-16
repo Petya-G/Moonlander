@@ -2,6 +2,9 @@
 #define SDLSTUFF_H
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_stdinc.h>
+#include <SDL2/SDL_timer.h>
 #include <stdbool.h>
 //#include <SDL2/SDL_ttf.h>
 

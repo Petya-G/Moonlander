@@ -3,7 +3,6 @@
 #include "sdlstuff.h"
 #include "geometry.h"
 #include "level.h"
-#include <SDL2/SDL_rect.h>
 
 typedef struct Lander {
   float x;
@@ -11,13 +10,12 @@ typedef struct Lander {
   float angle;
   float xvel;
   float yvel;
-  SDL_Rect rect;
+  int fuel;
 } Lander;
 
-extern const int STARTVEL;
-extern SDL_Rect rect;
 extern Lander lander;
-void updateLander(void);
-void landerEvent(SDL_Event event);
-
+extern Uint32 elapsed;
+void landerUpdate(void);
+void landerEvent(SDL_Event event, double dt);
+void landerReset();
 #endif

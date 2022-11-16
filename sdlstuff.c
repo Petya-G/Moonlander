@@ -7,7 +7,7 @@ SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 
 bool init(void) {
-  if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+  if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
     fprintf(stderr, "init: %s", SDL_GetError());
     return false;
   }
@@ -32,8 +32,10 @@ bool init(void) {
 }
 
 void shutdown(void) {
-  SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
+  SDL_DestroyRenderer(renderer);
+  window = NULL;
+  renderer = NULL;
 
   SDL_Quit();
 }

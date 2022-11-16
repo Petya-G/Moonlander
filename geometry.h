@@ -16,7 +16,6 @@ typedef struct Line {
   Point b;
 } Line;
 
-
 bool ccw(Point a, Point b, Point c);
 bool intersect(Line l1, Line l2);
 Point rotatePoint(Point p, Point o, float angle);

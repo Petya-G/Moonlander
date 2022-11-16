@@ -3,6 +3,22 @@
         "sdl2_gfxprimitives.h": "c",
         "sdl_rect.h": "c",
         "geometry.h": "c",
-        "source_location": "c"
+        "source_location": "c",
+        "level.h": "c",
+        "debugmalloc.h": "c",
+        "sdlstuff.h": "c",
+        "sstream": "c",
+        "sdl_stdinc.h": "c",
+        "chrono": "c",
+        "array": "c",
+        "deque": "c",
+        "list": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "unordered_set": "c",
+        "vector": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "valarray": "c"
     }
 }

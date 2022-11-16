@@ -1,8 +1,27 @@
 #ifndef LEVEL_H
 #define LEVEL_H
-#include "sdlstuff.h"
 #include "geometry.h"
+#include "sdlstuff.h"
+#include <stdlib.h>
+#include <time.h>
 
-void renderLevel(void);
-extern Line l[];
+typedef struct Segment {
+  Line l;
+  bool flat;
+  struct Segment *prev;
+  struct Segment *next;
+} Segment;
+
+typedef struct Terrain {
+  Segment *tail;
+  Segment *head;
+} Terrain;
+
+extern Segment *tail;
+extern Segment *head;
+void generateTerrain();
+void initTerrain(float start, float end);
+void append(float y, bool flat);
+void renderTerrain();
+void freeTerrain();
 #endif
