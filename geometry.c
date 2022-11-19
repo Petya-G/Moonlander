@@ -1,13 +1,17 @@
 #include "geometry.h"
 
-bool ccw(Point a, Point b, Point c){
-  return (c.y-a.y)*(b.x-a.x) > (b.y-a.y)*(c.x-a.x);
+//https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
+bool ccw(Point a, Point b, Point c) {
+  return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
 }
 
-bool intersect(Line l1, Line l2){
-  return ccw(l1.a,l2.a,l2.b) != ccw(l1.b,l2.a,l2.b) & ccw(l1.a,l1.b,l2.a) != ccw(l1.a,l1.b,l2.b);
+//Vonalak metszik e egymást
+bool intersect(Line l1, Line l2) {
+  return ccw(l1.a, l2.a, l2.b) != ccw(l1.b, l2.a, l2.b) &
+         ccw(l1.a, l1.b, l2.a) != ccw(l1.a, l1.b, l2.b);
 }
 
+//Pontot egy szöggel forgat egy másik pont körül
 Point rotatePoint(Point p, Point o, float angle) {
   float c = cos(TORAD(angle));
   float s = sin(TORAD(angle));
@@ -21,11 +25,31 @@ Point rotatePoint(Point p, Point o, float angle) {
   return p2;
 }
 
+//Vonalat megforgat egy szöggel egy pont körül
 Line rotateLine(Line l, Point o, float angle) {
   Line rl = {rotatePoint(l.a, o, angle), rotatePoint(l.b, o, angle)};
   return rl;
 }
 
+//Vonalt kicsinyít, nagyít
+Line scaleLine(Line l, float scalar) {
+  l.a.x = l.a.x * scalar;
+  l.a.y = l.a.y * scalar;
+  l.b.x = l.b.x * scalar;
+  l.b.y = l.b.y * scalar;
+  return l;
+}
+
+//Vonalat elmozgat
+Line moveLine(Line l, Point a) {
+  l.a.x += a.x;
+  l.a.y += a.y;
+  l.b.x += a.x;
+  l.b.y += a.y;
+  return l;
+}
+
+//Vonalt megjelenít, fehéren
 void renderLine(Line l) {
   aalineRGBA(renderer, l.a.x, l.a.y, l.b.x, l.b.y, 255, 255, 255, 255);
 }

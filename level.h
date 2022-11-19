@@ -15,10 +15,10 @@ typedef struct Segment {
 typedef struct Terrain {
   Segment *tail;
   Segment *head;
+  Point pos;
 } Terrain;
 
-extern Segment *tail;
-extern Segment *head;
+extern Terrain *terrain;
 void generateTerrain();
 void initTerrain(float start, float end);
 void append(float y, bool flat);

@@ -20,6 +20,8 @@ bool ccw(Point a, Point b, Point c);
 bool intersect(Line l1, Line l2);
 Point rotatePoint(Point p, Point o, float angle);
 Line rotateLine(Line l, Point o, float angle);
+Line scaleLine(Line l, float scalar);
+Line moveLine(Line l, Point a);
 bool linesInstersect(Line l1, Line l2);
 void renderLine(Line l);
 #endif

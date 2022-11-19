@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = main.c geometry.c lander.c level.c sdlstuff.c text.c debugmalloc.h
+OBJS = main.c geometry.c lander.c level.c sdlstuff.c text.c score.c debugmalloc.h
 
 #CC specifies which compiler we're using
 CC = gcc

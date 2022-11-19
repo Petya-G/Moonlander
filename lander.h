@@ -3,10 +3,10 @@
 #include "sdlstuff.h"
 #include "geometry.h"
 #include "level.h"
+#include "score.h"
 
 typedef struct Lander {
-  float x;
-  float y;
+  Point pos;
   float angle;
   float xvel;
   float yvel;

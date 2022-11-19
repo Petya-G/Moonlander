@@ -2,7 +2,7 @@
 
 void renderText(void) {
   char str[100];
-  snprintf(str, sizeof(str), "Altidue: %.2f", HEIGHT - lander.y);
+  snprintf(str, sizeof(str), "Altidue: %f", HEIGHT - lander.pos.y);
   stringRGBA(renderer, 0, 0, str, 255, 255, 255, 255);
   snprintf(str, sizeof(str), "Horizontal Speed: %.2f", lander.xvel);
   stringRGBA(renderer, 0, 12, str, 255, 255, 255, 255);

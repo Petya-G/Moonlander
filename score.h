@@ -1,9 +1,14 @@
 #ifndef SCORE_H
 #define SCORE_H
-#include "lander.h"
+#include "debugmalloc.h"
+#include "sdlstuff.h"
+#include <SDL2/SDL_stdinc.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-int calculateScore();
-void updateLeaderBoard();
+int calculateScore(int fuel, Uint32 elapsed);
+void updateScore(int points);
+void renderScore(int score);
 
 #endif
