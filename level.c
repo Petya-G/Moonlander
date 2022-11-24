@@ -1,15 +1,17 @@
 #include "level.h"
+#include "geometry.h"
 
-Terrain *terrain;
+Level *level;
 
 // hány részből álljon a pálya
 const float n = 30.0;
-// horizontális nagysága a pályaelemnek
+// hossza a pályaelemnek
 float step = 640 / n;
 
-void generateTerrain() {
+// egy képernyő hosszával megegyező pályarészt generál
+void generateLevel(Level *level) {
   // előző pályaelem magassága
-  int prev = terrain->head->l.b.y;
+  int prev = level->head->line.b.y;
   for (int i = 0; i < n; ++i) {
     int y;
     do {
@@ -23,72 +25,97 @@ void generateTerrain() {
 
     // minden ötödik lapos
     if (i % 5 == 0)
-      append(y, true);
+      append(level, y, true);
     else
-      append(y, false);
+      append(level, y, false);
     prev = y;
   }
 }
 
 // végére fűzünk új pályaelemet
-void append(float y, bool flat) {
+void append(Level *level, float y, bool flat) {
   Segment *new = (Segment *)malloc(sizeof(Segment));
 
-  new->prev = terrain->head;
+  new->prev = level->head;
   new->next = NULL;
-  new->l.a.x = terrain->head->l.b.x;
-  new->l.a.y = terrain->head->l.b.y;
-  new->l.b.x = new->l.a.x + step;
+  new->line.a.x = level->head->line.b.x;
+  new->line.a.y = level->head->line.b.y;
+  new->line.b.x = new->line.a.x + step;
 
   new->flat = flat;
   // ha lapos legyen a két pontja ugyan olyan magas
   if (flat)
-    new->l.b.y = new->l.a.y;
+    new->line.b.y = new->line.a.y;
   else
-    new->l.b.y = y;
+    new->line.b.y = y;
 
-  terrain->head->next = new;
-  terrain->head = new;
+  level->head->next = new;
+  level->head = new;
   return;
 }
 
-void initTerrain(float start, float end) {
-  terrain = (Terrain *)malloc(sizeof(Terrain));
-  Point pos = {0,0};
-  terrain->pos = pos;
-  
+Level *initLevel(float start, float end) {
+  level = (Level *)malloc(sizeof(Level));
+  // 0 a pozíciója
+  Point pos = {0, 0};
+  level->pos = pos;
+
+  // előre lefoglaljuk az elejét és a végét
   Segment *tail;
   Segment *head;
   tail = (Segment *)malloc(sizeof(Segment));
   head = (Segment *)malloc(sizeof(Segment));
-  terrain->tail = tail;
-  terrain->head = head;
+  level->tail = tail;
+  level->head = head;
 
-  terrain->tail->prev = NULL;
-  terrain->tail->next = terrain->head;
-  terrain->tail->l.a.x = 0;
-  terrain->tail->l.a.y = HEIGHT;
-  terrain->tail->l.b.x = step;
-  terrain->tail->l.b.y = start;
-  terrain->tail->flat = false;
+  // eleje
+  level->tail->prev = NULL;
+  level->tail->next = level->head;
+  // 0,0-nál kezd
+  level->tail->line.a.x = 0;
+  level->tail->line.a.y = HEIGHT;
+  // egy pályaelem hosszú és start elem magas
+  level->tail->line.b.x = step;
+  level->tail->line.b.y = start;
+  level->tail->flat = false;
 
-  terrain->head->prev = tail;
-  terrain->head->next = NULL;
-  terrain->head->l.a.x = terrain->head->prev->l.b.x;
-  terrain->head->l.a.y = terrain->head->prev->l.b.y;
-  terrain->head->l.b.x = terrain->head->l.a.x + step;
-  terrain->head->l.b.y = end;
-  terrain->head->flat = false;
+  level->head->prev = tail;
+  level->head->next = NULL;
+  // az első pontja az előző második pontja
+  level->head->line.a.x = level->head->prev->line.b.x;
+  level->head->line.a.y = level->head->prev->line.b.y;
+  // az x-e az előző pont + egy pályaelem hossza, az y end magas
+  level->head->line.b.x = level->head->line.a.x + step;
+  level->head->line.b.y = end;
+  level->head->flat = false;
+  return level;
 }
 
-void renderTerrain() {
-  for (Segment *i = terrain->tail; i != NULL; i = i->next)
-    renderLine(i->l);
+Level *reset(Level *level) {
+  // felszabadítjuk a pályát
+  freeLevel(level);
+
+  // létrehozzuk és inicalizáljuk az új pálytá
+  Level *temp;
+  temp = initLevel(450, 430);
+
+  // 50 width méretű elemet generál, remélhetőleg ezeken belül marad
+  for (int i = 0; i < 50; ++i)
+    generateLevel(temp);
+  return temp;
 }
 
-void freeTerrain() {
+void renderLevel(Level *level) {
+  for (Segment *i = level->tail; i != NULL; i = i->next) {
+    Line l;
+    l = moveLine(i->line, level->pos);
+    renderLine(l);
+  }
+}
+
+void freeLevel(Level *level) {
   Segment *i;
-  i = terrain->tail;
+  i = level->tail;
   while (i != NULL) {
     Segment *next = i->next;
     free(i);

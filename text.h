@@ -3,6 +3,6 @@
 #include "sdlstuff.h"
 #include "lander.h"
 
-void renderText(void);
+void renderText(Lander *lander);
 
 #endif

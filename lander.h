@@ -7,15 +7,15 @@
 
 typedef struct Lander {
   Point pos;
+  Point vel;
   float angle;
-  float xvel;
-  float yvel;
   int fuel;
+  Uint32 elapsed;
 } Lander;
 
-extern Lander lander;
-extern Uint32 elapsed;
-void landerUpdate(void);
-void landerEvent(SDL_Event event, double dt);
-void landerReset();
+extern const float g;
+extern Line landerLines[];
+void updateLander(Lander *lander, Line landerLines[]);
+void landerEvent(Lander *lander, SDL_Event event, double dt);
+Lander landerReset();
 #endif

@@ -41,11 +41,11 @@ Line scaleLine(Line l, float scalar) {
 }
 
 //Vonalat elmozgat
-Line moveLine(Line l, Point a) {
-  l.a.x += a.x;
-  l.a.y += a.y;
-  l.b.x += a.x;
-  l.b.y += a.y;
+Line moveLine(Line l, Point p) {
+  l.a.x += p.x;
+  l.a.y += p.y;
+  l.b.x += p.x;
+  l.b.y += p.y;
   return l;
 }
 

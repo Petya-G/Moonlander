@@ -9,7 +9,7 @@ CC = gcc
 COMPILER_FLAGS =
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lSDL2 -lSDL2_gfx -lm
+LINKER_FLAGS = -Bstatic -lSDL2 -lSDL2_gfx -lm -Bdynamic
 
 #OBJ_NAME specifies the name of our exectuable
 OBJ_NAME = Moonlander
