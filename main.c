@@ -78,7 +78,7 @@ int main(int argc, char *arg[]) {
         // lander lapos elemet metsz, dőlési szöge 5 fokon belül
         // van, x és y sebességének nagysága nem nagyobb 30-nál
         if (intersect(landerLines[i], l) && k->flat && abs(lander->angle) < 5 &&
-            abs(lander->vel.x) < 60 && abs(lander->vel.y) < 60)
+            abs(lander->vel.x) < 100 && abs(lander->vel.y) < 100)
           landed = true;
 
         // más eseteben vagy ha outofbounds akkor

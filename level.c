@@ -5,10 +5,11 @@ Level *level;
 
 // hány részből álljon a pálya
 const float n = 20.0;
-// hossza a pályaelemnek
-float step = 640 / n;
 
 Level *initLevel(float start, float end) {
+  // pályaelem hossza
+  float step = WIDTH / n;
+  
   level = (Level *)malloc(sizeof(Level));
   // 0 a pozíciója
   Point pos = {0, 0};
@@ -46,6 +47,8 @@ Level *initLevel(float start, float end) {
 
 // végére fűzünk új pályaelemet
 void append(Level *level, float y, bool flat) {
+  // pályaelem hossza
+  float step = WIDTH / n;
   Segment *new = (Segment *)malloc(sizeof(Segment));
 
   new->prev = level->head;
@@ -83,7 +86,7 @@ void generateLevel(Level *level) {
   }
 }
 
-//felszabadítja a level-t
+// felszabadítja a level-t
 void freeLevel(Level *level) {
   Segment *i;
   i = level->tail;

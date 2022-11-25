@@ -8,7 +8,7 @@
 typedef struct Lander {
   Point pos;      // pozíció
   Point vel;      // sebesség, vektor(függőleges, vízszintes)
-  int angle;    // dőlési szög
+  int angle;      // dőlési szög
   int fuel;       // üzemanyag
   Uint32 elapsed; // mennyi ideig repül
 } Lander;
