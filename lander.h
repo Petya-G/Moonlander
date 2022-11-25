@@ -10,7 +10,7 @@ typedef struct Lander {
   Point vel;      // sebesség, vektor(függőleges, vízszintes)
   int angle;      // dőlési szög
   int fuel;       // üzemanyag
-  Uint32 elapsed; // mennyi ideig repül
+  Uint32 elapsed; // mikor kezdett el repülni
 } Lander;
 
 extern const float g;
