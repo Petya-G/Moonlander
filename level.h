@@ -2,6 +2,7 @@
 #define LEVEL_H
 #include "geometry.h"
 #include "sdlstuff.h"
+#include "debugmalloc.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -23,5 +24,5 @@ void generateLevel(Level *level);
 void append(Level *level, float y, bool flat);
 void renderLevel(Level *level);
 void freeLevel(Level *level);
-Level *reset(Level *level);
+Level *resetLevel(Level *level);
 #endif

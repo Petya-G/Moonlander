@@ -8,10 +8,9 @@
 #include <stdlib.h>
 
 int main(int argc, char *arg[]) {
-  // Inicializálja az sdlt
+  // Inicializálja az sdlt, ha valami hiba történt kilép errror kóddal
   if (!init())
     exit(1);
-  srand(time(NULL));
 
   // Lander változó
   Lander *lander;
@@ -21,22 +20,21 @@ int main(int argc, char *arg[]) {
   // Pálya generálás, első két elem előre megadott
   Level *level;
   level = initLevel(450, 430);
-  for (int i = 0; i < 30; ++i)
+  for (int i = 0; i < 10; ++i)
     generateLevel(level);
 
-  SDL_Event event;
-  bool quit = false;
-  double dt;
+  Uint32 lastTick = SDL_GetTicks(); // előző frame ideje
 
-  // Main loop
-  Uint32 lastTick = SDL_GetTicks();
+  // game loop
+  bool quit = false;
   while (!quit) {
-    // Mennyi idő telt el az előző frame óta
-    Uint32 curTick = SDL_GetTicks();
-    dt = (curTick - lastTick) / 1000.0;
+    double dt; // delta time, mennyi idő telt el az előző frame óta
+    Uint32 curTick = SDL_GetTicks();    // jelenlegi frame ideje
+    dt = (curTick - lastTick) / 1000.0; // differenciájuk (ms-ba)
     lastTick = curTick;
 
     // eventkezelő
+    SDL_Event event;
     while (SDL_PollEvent(&event)) {
       // addig fut a program ameddig ki nem lépünk
       if (event.type == SDL_QUIT)
@@ -45,6 +43,7 @@ int main(int argc, char *arg[]) {
       landerEvent(lander, event, dt);
     }
 
+    // feketére állítjuk a színt és az előző frame-ből maradt dolgokat töröljük
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
@@ -61,77 +60,84 @@ int main(int argc, char *arg[]) {
                           {{+4, -31}, {-3, -31}},   {{-3, -31}, {-8, -26}},
                           {{-8, -26}, {-8, -19}},   {{-3, -14}, {-8, -19}}};
 
+    // frissítjük a landert és kirajzoljuk
     updateLander(lander, landerLines);
-
-    // Hitdetection
-    bool landerCrash = false;
-    bool landed = false;
 
     // pálya szélei
     Line left = {{0, 0}, {0, HEIGHT}};
     Line top = {{0, 0}, {WIDTH, 0}};
 
+    // Hitdetection
+    bool crashed = false;
+    bool landed = false;
     // lander és pálya vonailain végig megy
     for (int i = 0; i < 17; ++i) {
       for (Segment *k = level->tail; k != NULL; k = k->next) {
-        Line l;
-        l = moveLine(k->line, level->pos);
+        Line l = moveLine(k->line, level->pos);
 
-        // a lander metszik e egy lapos pályaelemet és a dőlési szöge 0
-        if (intersect(landerLines[i], l) && k->flat && lander->angle == 0)
+        // lander lapos elemet metsz, dőlési szöge 5 fokon belül
+        // van, x és y sebességének nagysága nem nagyobb 30-nál
+        if (intersect(landerLines[i], l) && k->flat && abs(lander->angle) < 5 &&
+            abs(lander->vel.x) < 60 && abs(lander->vel.y) < 60)
           landed = true;
 
         // más eseteben vagy ha outofbounds akkor
         else if (intersect(landerLines[i], l) ||
                  intersect(landerLines[i], left) ||
                  intersect(landerLines[i], top))
-          landerCrash = true;
+          crashed = true;
       }
     }
 
     // landolt
     if (landed) {
+      // frissítjük a pontot
       updateScore(calculateScore(lander->fuel, lander->elapsed));
-      SDL_Delay(1000);
+      SDL_Delay(2000);
+      // resetelünk mindent
       lndr = landerReset();
-      level = reset(level);
+      level = resetLevel(level);
     }
 
-    // lezuhant
-    else if (landerCrash) {
+    // lezuhant, resetelünk mindent
+    else if (crashed) {
       lndr = landerReset();
-      level = reset(level);
+      level = resetLevel(level);
     }
 
     // nem ütközik
     else {
       // veszt vel.x-ből amig nem nulla (légellenállás szerű)
       if (lander->vel.x > 0)
-        lander->vel.x -= g / 10 * dt;
+        lander->vel.x -= g / 5 * dt;
       else if (lander->vel.x < 0)
-        lander->vel.x += g / 10 * dt;
+        lander->vel.x += g / 5 * dt;
       // gyorsul lefele
-      lander->vel.y += g;
+      lander->vel.y += g * dt;
 
       // frissítjuk a lander poizícióját
       lander->pos.y += lander->vel.y * dt;
 
-      // a landert mozgatjuk ha nem értük el a pálya szélét, vagy visszafele gyorsul
-      if (lander->vel.x < 0 || lander->pos.x < WIDTH * 2 - WIDTH * 0.25)
+      // a landert mozgatjuk ha nem értük el a pálya szélét, vagy visszafele
+      // gyorsul
+      if (lander->vel.x < 0 || lander->pos.x < WIDTH * 2 - WIDTH * 0.33)
         lander->pos.x += lander->vel.x * dt;
 
       // a pályát mozgatjuk ha elértük a páyla szélét
-      else if (lander->pos.x > WIDTH * 2 - WIDTH * 0.25) {
+      else if (lander->pos.x > WIDTH * 2 - WIDTH * 0.33) {
         level->pos.x -= lander->vel.x * dt;
       }
     }
 
+    // kirajzoljuk a pályát, megjelenítjük a szöveget
     renderLevel(level);
     renderText(lander);
 
+    // megjelenítjük az ablakba a fentieket
     SDL_RenderPresent(renderer);
   }
+  // amikor kilép a program felszabadíjuk a pályát és az sdl-hez tartozó
+  // dolgokat
   freeLevel(level);
   shutdown();
-  return 0;
 }

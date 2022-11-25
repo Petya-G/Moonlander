@@ -9,6 +9,5 @@
 
 int calculateScore(int fuel, Uint32 elapsed);
 void updateScore(int points);
-void renderScore(int score);
 
 #endif

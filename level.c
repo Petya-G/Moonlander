@@ -4,55 +4,9 @@
 Level *level;
 
 // hány részből álljon a pálya
-const float n = 30.0;
+const float n = 20.0;
 // hossza a pályaelemnek
 float step = 640 / n;
-
-// egy képernyő hosszával megegyező pályarészt generál
-void generateLevel(Level *level) {
-  // előző pályaelem magassága
-  int prev = level->head->line.b.y;
-  for (int i = 0; i < n; ++i) {
-    int y;
-    do {
-      // fentebb, vagy lejebb lesz a köv. pályaelem az előzőhöz
-      if (rand() % 2)
-        y = prev + rand() % 50;
-      else
-        y = prev - rand() % 50;
-      // out of bounds ne legyen
-    } while (y < 0 || y > HEIGHT);
-
-    // minden ötödik lapos
-    if (i % 5 == 0)
-      append(level, y, true);
-    else
-      append(level, y, false);
-    prev = y;
-  }
-}
-
-// végére fűzünk új pályaelemet
-void append(Level *level, float y, bool flat) {
-  Segment *new = (Segment *)malloc(sizeof(Segment));
-
-  new->prev = level->head;
-  new->next = NULL;
-  new->line.a.x = level->head->line.b.x;
-  new->line.a.y = level->head->line.b.y;
-  new->line.b.x = new->line.a.x + step;
-
-  new->flat = flat;
-  // ha lapos legyen a két pontja ugyan olyan magas
-  if (flat)
-    new->line.b.y = new->line.a.y;
-  else
-    new->line.b.y = y;
-
-  level->head->next = new;
-  level->head = new;
-  return;
-}
 
 Level *initLevel(float start, float end) {
   level = (Level *)malloc(sizeof(Level));
@@ -82,8 +36,7 @@ Level *initLevel(float start, float end) {
   level->head->prev = tail;
   level->head->next = NULL;
   // az első pontja az előző második pontja
-  level->head->line.a.x = level->head->prev->line.b.x;
-  level->head->line.a.y = level->head->prev->line.b.y;
+  level->head->line.a = level->head->prev->line.b;
   // az x-e az előző pont + egy pályaelem hossza, az y end magas
   level->head->line.b.x = level->head->line.a.x + step;
   level->head->line.b.y = end;
@@ -91,7 +44,58 @@ Level *initLevel(float start, float end) {
   return level;
 }
 
-Level *reset(Level *level) {
+// végére fűzünk új pályaelemet
+void append(Level *level, float y, bool flat) {
+  Segment *new = (Segment *)malloc(sizeof(Segment));
+
+  new->prev = level->head;
+  new->next = NULL;
+  new->line.a = level->head->line.b;
+  new->line.b.x = new->line.a.x + step;
+  new->line.b.y = y;
+  new->flat = flat;
+
+  level->head->next = new;
+  level->head = new;
+  return;
+}
+
+// egy képernyő hosszával megegyező pályarészt generál
+void generateLevel(Level *level) {
+  // előző pályaelem magassága
+  for (int i = 0; i < n; ++i) {
+    int prevy = level->head->line.b.y;
+    int y;
+    do {
+      // fentebb, vagy lejebb lesz a köv. pályaelem az előzőhöz
+      if (rand() % 2)
+        y = prevy + rand() % 50;
+      else
+        y = prevy - rand() % 50;
+      // out of bounds ne legyen
+    } while (y < 50 || y > HEIGHT);
+
+    // minden ötödik lapos
+    if (i % 5 == 0)
+      append(level, prevy, true); // magassága azonos lesz az előzővel
+    else
+      append(level, y, false);
+  }
+}
+
+//felszabadítja a level-t
+void freeLevel(Level *level) {
+  Segment *i;
+  i = level->tail;
+  while (i != NULL) {
+    Segment *next = i->next;
+    free(i);
+    i = next;
+  }
+  free(level);
+}
+
+Level *resetLevel(Level *level) {
   // felszabadítjuk a pályát
   freeLevel(level);
 
@@ -99,8 +103,9 @@ Level *reset(Level *level) {
   Level *temp;
   temp = initLevel(450, 430);
 
-  // 50 width méretű elemet generál, remélhetőleg ezeken belül marad
-  for (int i = 0; i < 50; ++i)
+  // 10 ablak hosszúságú pályát generál, elméleti hiba, hogy kimegy ezen kívül,
+  // de gyakorlatban ki fogy üzemanyagból
+  for (int i = 0; i < 10; ++i)
     generateLevel(temp);
   return temp;
 }
@@ -110,15 +115,5 @@ void renderLevel(Level *level) {
     Line l;
     l = moveLine(i->line, level->pos);
     renderLine(l);
-  }
-}
-
-void freeLevel(Level *level) {
-  Segment *i;
-  i = level->tail;
-  while (i != NULL) {
-    Segment *next = i->next;
-    free(i);
-    i = next;
   }
 }

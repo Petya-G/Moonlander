@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = main.c geometry.c lander.c level.c sdlstuff.c text.c score.c debugmalloc.h
+OBJS = main.c geometry.c lander.c level.c sdlstuff.c text.c score.c
 
 #CC specifies which compiler we're using
 CC = gcc
@@ -9,7 +9,7 @@ CC = gcc
 COMPILER_FLAGS =
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -Bstatic -lSDL2 -lSDL2_gfx -lm -Bdynamic
+LINKER_FLAGS = -lSDL2 -lSDL2_gfx -lm
 
 #OBJ_NAME specifies the name of our exectuable
 OBJ_NAME = Moonlander

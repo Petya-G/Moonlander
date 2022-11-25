@@ -2,17 +2,17 @@
 #include "level.h"
 
 // Gravitácós állandó
-const float g = 1.16;
+const float g = 11.6 * 3;
 const int STARTVEL = 200;
 
 void updateLander(Lander *lander, Line landerLines[]) {
+  Point origin = {lander->pos.x, lander->pos.y - 14};
   // Végig megy a vonalakon
-  Point o = {lander->pos.x, lander->pos.y - 14};
   for (int i = 0; i < 17; ++i) {
     // Frissíti a pozicójukat
     landerLines[i] = moveLine(landerLines[i], lander->pos);
     // A dőlési szögüket, a lander közepéhez alulrók képest
-    landerLines[i] = rotateLine(landerLines[i], o, lander->angle);
+    landerLines[i] = rotateLine(landerLines[i], origin, lander->angle);
     // túl nagyra definiáltam a vonalakat, ezért zsugorítja
     landerLines[i] = scaleLine(landerLines[i], 0.5);
   }
@@ -37,8 +37,8 @@ Lander landerReset() {
 void landerEvent(Lander *lander, SDL_Event event, double dt) {
   if (event.type == SDL_KEYDOWN) {
     // w/fel gombok lenyomására, ha van üzemanyag
-    if (lander->fuel >= 0 && event.key.keysym.sym == SDLK_UP ||
-        lander->fuel >= 0 && event.key.keysym.sym == SDLK_w) {
+    if (lander->fuel > 0 && event.key.keysym.sym == SDLK_UP ||
+        lander->fuel > 0 && event.key.keysym.sym == SDLK_w) {
       // nem vagyok nagy fizikus
       const int speed = 300;
       lander->vel.y -= speed * sin(M_PI * (lander->angle + 90.0) / 180.0) * dt;
@@ -53,7 +53,7 @@ void landerEvent(Lander *lander, SDL_Event event, double dt) {
     if (event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d)
       lander->angle += 5;
 
-    if (lander->angle == 360 || lander->angle == -360)
+    if (abs(lander->angle) == 360)
       lander->angle = 0;
   }
 }

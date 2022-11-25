@@ -22,7 +22,10 @@
     "valarray": "c",
     "score.h": "c",
     "lander.h": "c",
-    "random": "c"
+    "random": "c",
+    "memory": "c",
+    "future": "c",
+    "optional": "c"
   },
   "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.cCompilerPath": "gcc",

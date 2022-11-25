@@ -1,16 +1,16 @@
 #ifndef LANDER_H
 #define LANDER_H
-#include "sdlstuff.h"
 #include "geometry.h"
 #include "level.h"
 #include "score.h"
+#include "sdlstuff.h"
 
 typedef struct Lander {
-  Point pos;
-  Point vel;
-  float angle;
-  int fuel;
-  Uint32 elapsed;
+  Point pos;      // pozíció
+  Point vel;      // sebesség, vektor(függőleges, vízszintes)
+  int angle;    // dőlési szög
+  int fuel;       // üzemanyag
+  Uint32 elapsed; // mennyi ideig repül
 } Lander;
 
 extern const float g;
